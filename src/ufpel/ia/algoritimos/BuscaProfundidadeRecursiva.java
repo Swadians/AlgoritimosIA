@@ -7,6 +7,7 @@ package ufpel.ia.algoritimos;
 
 import java.util.List;
 import ufpel.ia.base.Nodo;
+import ufpel.ia.util.Monitorador;
 import ufpel.ia.util.TabuleitoUtil;
 
 /**
@@ -18,6 +19,9 @@ public class BuscaProfundidadeRecursiva implements Busca {
     public List<Nodo> Busca(Nodo base, int profundidade) {
         if (TabuleitoUtil.EhJogadaFinal(base)) {
             return TabuleitoUtil.RetornaCaminho(base);
+        }
+        if (Monitorador.getTimeExecutation() > 60) {
+            return null;
         }
         base.visitado = true;
 

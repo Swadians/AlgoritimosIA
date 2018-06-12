@@ -8,6 +8,7 @@ package ufpel.ia.algoritimos;
 import java.util.LinkedList;
 import java.util.List;
 import ufpel.ia.base.Nodo;
+import ufpel.ia.util.Monitorador;
 import ufpel.ia.util.TabuleitoUtil;
 
 /**
@@ -26,7 +27,9 @@ public class BuscaLargura implements Busca {
             profundidade = Integer.MAX_VALUE;
         }
 
+        Monitorador.startMaxSizeListMonitor(arvore);
         for (int i = 0; i < profundidade; i++) {
+            Monitorador.updateSizeList();
             arvore.addAll(nivel);
             for (Nodo jogada : nivel) {
                 if (TabuleitoUtil.EhJogadaFinal(jogada)) {

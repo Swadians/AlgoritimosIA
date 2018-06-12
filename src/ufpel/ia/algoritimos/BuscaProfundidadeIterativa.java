@@ -8,6 +8,7 @@ package ufpel.ia.algoritimos;
 import java.util.List;
 import java.util.Stack;
 import ufpel.ia.base.Nodo;
+import ufpel.ia.util.Monitorador;
 import ufpel.ia.util.TabuleitoUtil;
 
 /**
@@ -19,14 +20,21 @@ public class BuscaProfundidadeIterativa implements Busca {
     @Override
     public List<Nodo> Busca(Nodo base, int profundidade) {
         Stack<Nodo> pilhaDeNodos = new Stack<>();
+        Monitorador.startMaxSizeListMonitor(pilhaDeNodos);
 
         pilhaDeNodos.add(base);
 
         while (!pilhaDeNodos.empty()) {
+
+            Monitorador.updateSizeList();
             Nodo aProcurar = pilhaDeNodos.pop();
 
             if (TabuleitoUtil.EhJogadaFinal(aProcurar)) {
                 return TabuleitoUtil.RetornaCaminho(aProcurar);
+            }
+
+            if (Monitorador.getTimeExecutation() > 60) {
+                return null;
             }
 
             aProcurar.visitado = true;

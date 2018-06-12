@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class Nodo implements Cloneable, Comparable<Nodo> {
 
     private int[][] tabuleiro;
-    private static int tamanhoTabuleiro;
+    private int tamanhoTabuleiro;
     private int posLinhaJogavel;
     private int posColunaJogavel;
     public Nodo pai;

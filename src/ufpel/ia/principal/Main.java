@@ -5,11 +5,14 @@
  */
 package ufpel.ia.principal;
 
+import java.util.ArrayList;
 import java.util.List;
 import ufpel.ia.algoritimos.Busca;
-import ufpel.ia.algoritimos.BuscaBestFirst;
+import ufpel.ia.algoritimos.BuscaAEstrela;
 import ufpel.ia.algoritimos.HeuristicaContaPosDist;
 import ufpel.ia.base.Nodo;
+import ufpel.ia.util.Monitorador;
+import ufpel.ia.util.TabuleitoUtil;
 
 /**
  *
@@ -18,19 +21,51 @@ import ufpel.ia.base.Nodo;
 public class Main {
 
     public static void main(String[] args) {
+        List<Busca> buscas = new ArrayList<>();
 
-        Busca algoritimoBusca = new BuscaBestFirst(new HeuristicaContaPosDist());
+        buscas.add(new BuscaAEstrela(new HeuristicaContaPosDist()));
 
-        Nodo base = new Nodo(4);
-        int[][] tabuleiro = {{5, 1, 2, 3}, {9, 6, 7, 4}, {13, 10, 11, 8}, {-1, 14, 15, 12}};
+        for (int x = 0; x < buscas.size(); x++) {
+            System.out.println("Algoritimo " + x);
+            for (int t = 3; t < 10; t++) {
+                System.out.println("");
+                System.out.println("");
+                System.out.println("Tamanho do tabuleiro:" + t);
+                for (int i = 0; i < 10; i++) {
+                    try {
+                        System.out.println("");
+                        System.out.println("Test " + i);
 
-        base.setTabuleiro(tabuleiro, 3, 0);
+                        Busca algoritimoBusca = buscas.get(x);
+                        Nodo base = new Nodo(t);
+                        int embaralhamentoMaximo = 20;
 
-        List<Nodo> jogadas = algoritimoBusca.Busca(base, 200);
+                        TabuleitoUtil.GeraTabuleiroInicial(base, embaralhamentoMaximo);
 
-        System.out.println("Num Jogadas: " + jogadas.size());
-        for (Nodo jogada : jogadas) {
-            System.out.println(jogada);
+                        Monitorador.startTimeMonitoring();
+
+                        List<Nodo> jogadas = algoritimoBusca.Busca(base, -1);
+
+                        if (jogadas == null) {
+                            System.out.println("Pegou ramo infinito!");
+                        } else {
+                            System.out.println("Maior numero de nodos: " + Monitorador.getMaxSizeListMonitor());
+                            System.out.println("Tempo usao: " + Monitorador.getTimeExecutation() + "s");
+                            System.out.println("Num Jogadas: " + jogadas.size());
+                        }
+
+                        System.out.println("");
+                        System.out.println("Num Jogadas: " + jogadas.size());
+                        for (Nodo jogada : jogadas) {
+                            System.out.println(jogada);
+                        }
+                    } catch (OutOfMemoryError e) {
+                        System.out.println("Faltou memoria!");
+                        System.out.println("Maior numero de nodos: " + Monitorador.getMaxSizeListMonitor());
+                        System.out.println("Tempo usado: " + Monitorador.getTimeExecutation() + "s");
+                    }
+                }
+            }
         }
 
     }

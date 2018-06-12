@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import ufpel.ia.base.Nodo;
+import ufpel.ia.util.Monitorador;
 import ufpel.ia.util.TabuleitoUtil;
 
 /**
@@ -26,11 +27,14 @@ public class BuscaAEstrela implements Busca {
     @Override
     public List<Nodo> Busca(Nodo base, int profundidade) {
         Queue<Nodo> FilaDePrioridade = new PriorityQueue<>();
+        Monitorador.startMaxSizeListMonitor(FilaDePrioridade);
 
         TabuleitoUtil.CalculaValorHeuristica(qualquer, base);
         FilaDePrioridade.add(base);
 
         while (!FilaDePrioridade.isEmpty()) {
+            Monitorador.updateSizeList();
+
             Nodo aProcurar = FilaDePrioridade.poll();
 
             if (TabuleitoUtil.EhJogadaFinal(aProcurar)) {
@@ -47,7 +51,7 @@ public class BuscaAEstrela implements Busca {
                     if (jogada != null && !jogada.visitado) {
                         int retorno = TabuleitoUtil.CalculaValorHeuristica(qualquer, jogada);
 
-                        jogada.setValorHeuristica(profundidadeAtual + retorno);
+                        jogada.setValorHeuristica(profundidadeAtual * 4 + retorno);
                         FilaDePrioridade.add(jogada);
                     }
                 });

@@ -7,6 +7,7 @@ package ufpel.ia.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import ufpel.ia.algoritimos.Heuristica;
 import ufpel.ia.base.Nodo;
 
@@ -88,7 +89,7 @@ public class TabuleitoUtil {
     }
 
     private static void InicializaEstadoFinal(Nodo base) {
-        if (TabuleitoUtil.ESTADOFINAL == null) {
+        if ((TabuleitoUtil.ESTADOFINAL == null) || (TabuleitoUtil.ESTADOFINAL.getTamanhoTabuleiro() != base.getTamanhoTabuleiro())) {
             TabuleitoUtil.ESTADOFINAL = new Nodo(base.getTamanhoTabuleiro());
             int[][] estadoFinal = new int[base.getTamanhoTabuleiro()][base.getTamanhoTabuleiro()];
             int contador = 1;
@@ -106,4 +107,65 @@ public class TabuleitoUtil {
         }
     }
 
+    public static void GeraTabuleiroInicial(Nodo base, int numeroDeEmbaralhamento) {
+        int tamanho = base.getTamanhoTabuleiro();
+
+        int[][] tabuleiro = new int[tamanho][tamanho];
+        int contador = 1;
+
+        for (int i = 0; i < tamanho; i++) {
+            for (int j = 0; j < tamanho; j++) {
+                tabuleiro[i][j] = contador;
+                contador++;
+            }
+        }
+        tabuleiro[tamanho - 1][tamanho - 1] = -1;
+
+        Random rand = new Random();
+        int posLinhaJogavel = tamanho - 1;
+        int posColunaJogavel = tamanho - 1;
+        for (int i = 0; i < numeroDeEmbaralhamento; i++) {
+            if (rand.nextBoolean()) {
+                if (posLinhaJogavel == tamanho - 1) {
+                    int valorTemp = tabuleiro[posLinhaJogavel - 1][posColunaJogavel];
+                    tabuleiro[posLinhaJogavel - 1][posColunaJogavel] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posLinhaJogavel--;
+                } else if (posLinhaJogavel == 0) {
+                    int valorTemp = tabuleiro[posLinhaJogavel + 1][posColunaJogavel];
+                    tabuleiro[posLinhaJogavel + 1][posColunaJogavel] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posLinhaJogavel++;
+                } else {
+                    int valor = rand.nextBoolean() ? -1 : 1;
+
+                    int valorTemp = tabuleiro[posLinhaJogavel + valor][posColunaJogavel];
+                    tabuleiro[posLinhaJogavel + valor][posColunaJogavel] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posLinhaJogavel += valor;
+                }
+
+            } else {
+                if (posColunaJogavel == tamanho - 1) {
+                    int valorTemp = tabuleiro[posLinhaJogavel][posColunaJogavel - 1];
+                    tabuleiro[posLinhaJogavel][posColunaJogavel - 1] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posColunaJogavel--;
+                } else if (posColunaJogavel == 0) {
+                    int valorTemp = tabuleiro[posLinhaJogavel][posColunaJogavel + 1];
+                    tabuleiro[posLinhaJogavel][posColunaJogavel + 1] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posColunaJogavel++;
+                } else {
+                    int valor = rand.nextBoolean() ? -1 : 1;
+
+                    int valorTemp = tabuleiro[posLinhaJogavel][posColunaJogavel + valor];
+                    tabuleiro[posLinhaJogavel][posColunaJogavel + valor] = -1;
+                    tabuleiro[posLinhaJogavel][posColunaJogavel] = valorTemp;
+                    posColunaJogavel += valor;
+                }
+            }
+        }
+        base.setTabuleiro(tabuleiro, posLinhaJogavel, posColunaJogavel);
+    }
 }
